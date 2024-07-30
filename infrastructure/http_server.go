@@ -3,11 +3,16 @@ package infrastructure
 import (
 	"backend_golang/adapter/repository"
 	"backend_golang/infrastructure/database"
+	"backend_golang/infrastructure/router"
 	"log"
+	"strconv"
 )
 
 type config struct {
-	dbSQL repository.SQL
+	env           string
+	dbSQL         repository.SQL
+	webServerPort router.Port
+	webServer     router.Server
 }
 
 func NewConfig() *config {
@@ -23,4 +28,33 @@ func (c *config) DbSQL(instance int) *config {
 	log.Println("Successfully connected to the SQL database")
 	c.dbSQL = db
 	return c
+}
+
+func (c *config) WebServerPort(port string) *config {
+	p, err := strconv.Atoi(port)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	c.webServerPort = router.Port(p)
+	return c
+}
+
+func (c *config) WebServer(instance int) *config {
+	s, err := router.NewWebServerFactory(
+		instance,
+		c.dbSQL,
+		c.webServerPort,
+	)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Println("Successfully configured router server")
+	c.webServer = s
+	return c
+}
+
+func (c *config) Start() {
+	c.webServer.Listen()
 }
