@@ -1,6 +1,8 @@
 package database
 
 import (
+	"backend_golang/adapter/repository"
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
@@ -10,25 +12,25 @@ type mysqlHandler struct {
 	db *sql.DB
 }
 
-//func (m *mysqlHandler) ExecuteContext(ctx context.Context, s string, i ...interface{}) error {
-//	//TODO implement me
-//	panic("implement me")
-//}
-//
-//func (m *mysqlHandler) QueryContext(ctx context.Context, s string, i ...interface{}) (repository.Rows, error) {
-//	//TODO implement me
-//	panic("implement me")
-//}
-//
-//func (m *mysqlHandler) QueryRowContext(ctx context.Context, s string, i ...interface{}) repository.Row {
-//	//TODO implement me
-//	panic("implement me")
-//}
-//
-//func (m *mysqlHandler) BeginTx(ctx context.Context) (repository.Tx, error) {
-//	//TODO implement me
-//	panic("implement me")
-//}
+func (m mysqlHandler) ExecuteContext(ctx context.Context, s string, i ...interface{}) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m mysqlHandler) QueryContext(ctx context.Context, s string, i ...interface{}) (repository.Rows, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m mysqlHandler) QueryRowContext(ctx context.Context, s string, i ...interface{}) repository.Row {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m mysqlHandler) BeginTx(ctx context.Context) (repository.Tx, error) {
+	//TODO implement me
+	panic("implement me")
+}
 
 func NewMySQLHandler(c *config) (*mysqlHandler, error) {
 	ds := fmt.Sprintf(
