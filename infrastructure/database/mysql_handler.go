@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 )
 
@@ -12,9 +13,14 @@ type mysqlHandler struct {
 	db *sql.DB
 }
 
-func (m mysqlHandler) ExecuteContext(ctx context.Context, s string, i ...interface{}) error {
-	//TODO implement me
-	panic("implement me")
+func (m mysqlHandler) ExecuteContext(query string, args ...interface{}) error {
+	_, err := m.db.Exec(query, args...)
+	if err != nil {
+		log.Println("[mysql_handler] : ", err)
+		return err
+	}
+
+	return nil
 }
 
 func (m mysqlHandler) QueryContext(ctx context.Context, s string, i ...interface{}) (repository.Rows, error) {
@@ -34,12 +40,13 @@ func (m mysqlHandler) BeginTx(ctx context.Context) (repository.Tx, error) {
 
 func NewMySQLHandler(c *config) (*mysqlHandler, error) {
 	ds := fmt.Sprintf(
-		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
-		c.host,
-		c.port,
+		//db, err := sql.Open("mysql", "user:password@/dbname")
+		//    db, err := sql.Open("mysql", "kazuhira:password@(172.17.0.2:3306)/practice")
+		//"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
+		"%s:%s@/%s",
 		c.user,
-		c.database,
 		c.password,
+		c.database,
 	)
 
 	fmt.Println(ds)

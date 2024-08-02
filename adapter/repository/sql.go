@@ -3,7 +3,7 @@ package repository
 import "context"
 
 type SQL interface {
-	ExecuteContext(context.Context, string, ...interface{}) error
+	ExecuteContext(string, ...interface{}) error
 	QueryContext(context.Context, string, ...interface{}) (Rows, error)
 	QueryRowContext(context.Context, string, ...interface{}) Row
 	BeginTx(ctx context.Context) (Tx, error)

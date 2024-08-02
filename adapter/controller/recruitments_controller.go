@@ -30,14 +30,12 @@ func (r *recruitmentController) Create(w http.ResponseWriter, req *http.Request)
 		return
 	}
 	defer req.Body.Close()
-
 	err := r.uc.Create(input)
 	if err != nil {
 		log.Println("[create_recruitment] : ", err.Error())
 		response.NewError(http.StatusBadRequest, err).Send(w)
 		return
 	}
-
 	log.Println("[create_recruitment] : ", "success creating recruitment")
 	response.NewSuccess(http.StatusCreated, nil).Send(w)
 }

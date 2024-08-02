@@ -3,6 +3,7 @@ package router
 import (
 	"backend_golang/adapter/controller"
 	"backend_golang/adapter/repository"
+	"backend_golang/usecase"
 	"fmt"
 	"log"
 	"net/http"
@@ -45,13 +46,27 @@ func (g *ginEngine) Listen() {
 
 func (g *ginEngine) setAppHandlers(r *gin.Engine) {
 
-	recruitmentsController := controller.NewRecruitmentsController()
+	//recruitmentSQL := repository.NewRecruitmentSQL(g.db)
+	//recruitmentUsecase := usecase.NewRecruitmentUsecase(&recruitmentSQL)
+	//recruitmentsController := controller.NewRecruitmentsController(&recruitmentUsecase)
 
-	r.GET("/recruitments", g.buildFindAllRecruitmentsController(recruitmentsController))
+	//r.POST("/recruitments", g.buildCreateRecruitmentController(recruitmentsController))
+	r.POST("/recruitments", g.buildCreateRecruitmentController())
 }
 
-func (g *ginEngine) buildFindAllRecruitmentsController(controller controller.RecruitmentsController) gin.HandlerFunc {
+// func (g *ginEngine) buildCreateRecruitmentController(controller controller.RecruitmentsController) gin.HandlerFunc {
+func (g *ginEngine) buildCreateRecruitmentController() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		controller.FindAll(c.Writer, c.Request)
+		recruitmentSQL := repository.NewRecruitmentSQL(g.db)
+		recruitmentUsecase := usecase.NewRecruitmentUsecase(&recruitmentSQL)
+		recruitmentsController := controller.NewRecruitmentsController(&recruitmentUsecase)
+		recruitmentsController.Create(c.Writer, c.Request)
+		//controller.Create(c.Writer, c.Request)
 	}
 }
+
+//func (g *ginEngine) buildFindAllRecruitmentsController(controller controller.RecruitmentsController) gin.HandlerFunc {
+//	return func(c *gin.Context) {
+//		controller.FindAll(c.Writer, c.Request)
+//	}
+//}
