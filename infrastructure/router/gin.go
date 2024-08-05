@@ -2,6 +2,7 @@ package router
 
 import (
 	"backend_golang/adapter/controller"
+	"backend_golang/adapter/presenter"
 	"backend_golang/adapter/repository"
 	"backend_golang/usecase"
 	"fmt"
@@ -46,27 +47,23 @@ func (g *ginEngine) Listen() {
 
 func (g *ginEngine) setAppHandlers(r *gin.Engine) {
 
-	//recruitmentSQL := repository.NewRecruitmentSQL(g.db)
-	//recruitmentUsecase := usecase.NewRecruitmentUsecase(&recruitmentSQL)
-	//recruitmentsController := controller.NewRecruitmentsController(&recruitmentUsecase)
+	recruitmentRouter := r.Group("/recruitments")
+	recruitmentSQL := repository.NewRecruitmentSQL(g.db)
+	recruitmentUsecase := usecase.NewRecruitmentUsecase(recruitmentSQL, presenter.NewRecruitmentPresenter())
+	recruitmentsController := controller.NewRecruitmentsController(recruitmentUsecase)
 
-	//r.POST("/recruitments", g.buildCreateRecruitmentController(recruitmentsController))
-	r.POST("/recruitments", g.buildCreateRecruitmentController())
+	recruitmentRouter.POST("", g.buildCreateRecruitmentController(recruitmentsController))
+	recruitmentRouter.GET("", g.buildFindAllRecruitmentController(recruitmentsController))
 }
 
-// func (g *ginEngine) buildCreateRecruitmentController(controller controller.RecruitmentsController) gin.HandlerFunc {
-func (g *ginEngine) buildCreateRecruitmentController() gin.HandlerFunc {
+func (g *ginEngine) buildCreateRecruitmentController(recruitmentsController controller.RecruitmentsController) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		recruitmentSQL := repository.NewRecruitmentSQL(g.db)
-		recruitmentUsecase := usecase.NewRecruitmentUsecase(&recruitmentSQL)
-		recruitmentsController := controller.NewRecruitmentsController(&recruitmentUsecase)
 		recruitmentsController.Create(c.Writer, c.Request)
-		//controller.Create(c.Writer, c.Request)
 	}
 }
 
-//func (g *ginEngine) buildFindAllRecruitmentsController(controller controller.RecruitmentsController) gin.HandlerFunc {
-//	return func(c *gin.Context) {
-//		controller.FindAll(c.Writer, c.Request)
-//	}
-//}
+func (g *ginEngine) buildFindAllRecruitmentController(recruitmentsController controller.RecruitmentsController) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		recruitmentsController.FindAll(c.Writer, c.Request)
+	}
+}

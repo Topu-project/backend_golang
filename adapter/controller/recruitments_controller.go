@@ -11,6 +11,7 @@ import (
 
 type RecruitmentsController interface {
 	Create(w http.ResponseWriter, req *http.Request)
+	FindAll(w http.ResponseWriter, req *http.Request)
 }
 
 type recruitmentController struct {
@@ -19,6 +20,18 @@ type recruitmentController struct {
 
 func NewRecruitmentsController(uc usecase.RecruitmentUsecase) RecruitmentsController {
 	return &recruitmentController{uc: uc}
+}
+
+func (r *recruitmentController) FindAll(w http.ResponseWriter, req *http.Request) {
+	output, err := r.uc.FindAll()
+	if err != nil {
+		log.Println("[find_all_recruitment] : ", err.Error())
+		response.NewError(http.StatusInternalServerError, err).Send(w)
+		return
+	}
+
+	log.Println("[find_all_recruitment] : ", "success find all recruitments")
+	response.NewSuccess(http.StatusOK, output).Send(w)
 }
 
 func (r *recruitmentController) Create(w http.ResponseWriter, req *http.Request) {

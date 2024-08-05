@@ -1,72 +1,100 @@
 package domain
 
-import _ "time"
-
-//go:generate stringer -type=RecruitmentCategories
-type RecruitmentCategories int
-
-const (
-	PROJECT RecruitmentCategories = iota
-	STUDY
+import (
+	"time"
+	_ "time"
 )
 
-//go:generate stringer -type=ProgressMethods
-type ProgressMethods int
+type RecruitmentCategories string
 
 const (
-	ALL ProgressMethods = iota
-	ONLINE
-	OFFLINE
+	PROJECT = RecruitmentCategories("PROJECT")
+	STUDY   = RecruitmentCategories("STUDY")
+)
+
+type ProgressMethods string
+
+const (
+	ALL     = ProgressMethods("ALL")
+	ONLINE  = ProgressMethods("ONLINE")
+	OFFLINE = ProgressMethods("OFFLINE")
 )
 
 type (
 	Recruitment struct {
-		//id                    string
+		id                    *int
 		recruitmentCategories RecruitmentCategories
-		//progressMethods       ProgressMethods
-		//techStacks            string
-		//positions             string
-		//numberOfPeople        int16
-		//progressPeriod        int16
-		//recruitmentDeadline   time.Time
-		//contract              string
-		//subject               string
-		//content               string
+		progressMethods       ProgressMethods
+		techStacks            string
+		positions             string
+		numberOfPeople        int16
+		progressPeriod        int16
+		recruitmentDeadline   time.Time
+		contract              string
+		subject               string
+		content               string
+	}
+
+	RecruitmentReadOnly struct {
+		ID                    *int
+		RecruitmentCategories RecruitmentCategories
+		ProgressMethods       ProgressMethods
+		TechStacks            string
+		Positions             string
+		NumberOfPeople        int16
+		ProgressPeriod        int16
+		RecruitmentDeadline   time.Time
+		Contract              string
+		Subject               string
+		Content               string
 	}
 
 	RecruitmentRepository interface {
 		Create(recruitment Recruitment) error
+		FindAll() ([]Recruitment, error)
 	}
 )
 
 func NewRecruitment(
-	//id string,
+	id *int,
 	recruitmentCategories RecruitmentCategories,
-	// progressMethods ProgressMethods,
-	// techStacks string,
-	// positions string,
-	// numberOfPeople int16,
-	// progressPeriod int16,
-	// recruitmentDeadline time.Time,
-	// contract string,
-	// subject string,
-	// content string,
+	progressMethods ProgressMethods,
+	techStacks string,
+	positions string,
+	numberOfPeople int16,
+	progressPeriod int16,
+	recruitmentDeadline time.Time,
+	contract string,
+	subject string,
+	content string,
 ) Recruitment {
 	return Recruitment{
-		//id:                    id,
+		id:                    id,
 		recruitmentCategories: recruitmentCategories,
-		//progressMethods:       progressMethods,
-		//techStacks:            techStacks,
-		//positions:             positions,
-		//numberOfPeople:        numberOfPeople,
-		//progressPeriod:        progressPeriod,
-		//recruitmentDeadline:   recruitmentDeadline,
-		//contract:              contract,
-		//subject:               subject,
-		//content:               content,
+		progressMethods:       progressMethods,
+		techStacks:            techStacks,
+		positions:             positions,
+		numberOfPeople:        numberOfPeople,
+		progressPeriod:        progressPeriod,
+		recruitmentDeadline:   recruitmentDeadline,
+		contract:              contract,
+		subject:               subject,
+		content:               content,
 	}
 }
 
-func (r *Recruitment) RecruitmentCategories() RecruitmentCategories {
-	return r.recruitmentCategories
+func (r *Recruitment) ToReadOnly() *RecruitmentReadOnly {
+	return &RecruitmentReadOnly{
+		ID:                    r.id,
+		RecruitmentCategories: r.recruitmentCategories,
+		ProgressMethods:       r.progressMethods,
+		TechStacks:            r.techStacks,
+		Positions:             r.positions,
+		NumberOfPeople:        r.numberOfPeople,
+		ProgressPeriod:        r.progressPeriod,
+		RecruitmentDeadline:   r.recruitmentDeadline,
+		Contract:              r.contract,
+		Subject:               r.subject,
+		Content:               r.content,
+	}
 }

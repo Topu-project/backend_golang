@@ -4,6 +4,7 @@ import "context"
 
 type SQL interface {
 	ExecuteContext(string, ...interface{}) error
+	Query(string, ...any) (Rows, error)
 	QueryContext(context.Context, string, ...interface{}) (Rows, error)
 	QueryRowContext(context.Context, string, ...interface{}) Row
 	BeginTx(ctx context.Context) (Tx, error)

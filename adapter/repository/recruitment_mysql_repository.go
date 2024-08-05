@@ -2,49 +2,109 @@ package repository
 
 import (
 	"backend_golang/domain"
+	"errors"
 	"log"
+	"time"
 )
 
 type RecruitmentSQL struct {
 	db SQL
 }
 
-func NewRecruitmentSQL(db SQL) RecruitmentSQL {
-	return RecruitmentSQL{
+func NewRecruitmentSQL(db SQL) domain.RecruitmentRepository {
+	return &RecruitmentSQL{
 		db: db,
 	}
 }
 
-func (r *RecruitmentSQL) Create(recruitment domain.Recruitment) error {
-	var query = `INSERT INTO recruitment(recruitment_categories) VALUES (?)`
-	//	var query = `
-	//		INSERT INTO
-	//			recruitment(
-	//			            recruitment_categories
-	//-- 			            progressMethods,
-	//-- 			            techStacks,
-	//-- 			            positions,
-	//-- 			            numberOfPeople,
-	//-- 			            progressPeriod,
-	//-- 			            recruitmentDeadline,
-	//-- 			            contract,
-	//-- 			            subject,
-	//-- 			            content
-	//	      )
-	//		VALUES
-	//			($1
-	//-- 			 $2,
-	//-- 			 $3,
-	//-- 			 $4,
-	//-- 			 $5,
-	//-- 			 $6,
-	//-- 			 $7,
-	//-- 			 $8,
-	//-- 			 $9,
-	//-- 			 $10)
-	//			)`
+func (r *RecruitmentSQL) FindAll() ([]domain.Recruitment, error) {
+	query := `SELECT * FROM recruitment`
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return []domain.Recruitment{}, errors.Join(err, errors.New("error listing accounts"))
+	}
 
-	err := r.db.ExecuteContext(query, recruitment.RecruitmentCategories())
+	var recruitments = make([]domain.Recruitment, 0)
+	for rows.Next() {
+		var (
+			id                    int
+			recruitmentCategories domain.RecruitmentCategories
+			progressMethods       domain.ProgressMethods
+			techStacks            string
+			positions             string
+			numberOfPeople        int16
+			progressPeriod        int16
+			recruitmentDeadline   time.Time
+			contract              string
+			subject               string
+			content               string
+		)
+
+		if err = rows.Scan(
+			&id,
+			&recruitmentCategories,
+			&progressMethods,
+			&techStacks,
+			&positions,
+			&numberOfPeople,
+			&progressPeriod,
+			&recruitmentDeadline,
+			&contract,
+			&subject,
+			&content,
+		); err != nil {
+			return []domain.Recruitment{}, errors.Join(err, errors.New("error listing accounts"))
+		}
+
+		recruitments = append(recruitments, domain.NewRecruitment(
+			&id,
+			recruitmentCategories,
+			progressMethods,
+			techStacks,
+			positions,
+			numberOfPeople,
+			progressPeriod,
+			recruitmentDeadline,
+			contract,
+			subject,
+			content,
+		))
+	}
+	defer rows.Close()
+
+	if err = rows.Err(); err != nil {
+		return []domain.Recruitment{}, err
+	}
+
+	return recruitments, nil
+}
+
+func (r *RecruitmentSQL) Create(recruitment domain.Recruitment) error {
+	rd := recruitment.ToReadOnly()
+	var query = `INSERT INTO recruitment(recruitment_categories,
+										 progress_methods,
+										 tech_stacks,
+										 positions,
+										 number_of_people,
+										 progress_period,
+										 recruitment_deadline,
+										 contract,
+										 subject,
+										 content)
+				 VALUES (?,?,?,?,?,?,?,?,?,?)`
+
+	err := r.db.ExecuteContext(query,
+		rd.RecruitmentCategories,
+		rd.ProgressMethods,
+		rd.TechStacks,
+		rd.Positions,
+		rd.NumberOfPeople,
+		rd.ProgressPeriod,
+		rd.RecruitmentDeadline,
+		rd.Contract,
+		rd.Subject,
+		rd.Content,
+	)
 	if err != nil {
 		log.Println("[recruitment_mysql_repository] : ", err)
 		return err
