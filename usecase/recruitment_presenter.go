@@ -6,5 +6,6 @@ import (
 )
 
 type RecruitmentPresenter interface {
-	FindAllOutput([]domain.Recruitment) []output.FindAllRecruitmentOutput
+	FindAllOutput([]domain.Recruitment) []output.RecruitmentOutput
+	Output(domain.Recruitment) output.RecruitmentOutput
 }

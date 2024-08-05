@@ -54,6 +54,7 @@ func (g *ginEngine) setAppHandlers(r *gin.Engine) {
 
 	recruitmentRouter.POST("", g.buildCreateRecruitmentController(recruitmentsController))
 	recruitmentRouter.GET("", g.buildFindAllRecruitmentController(recruitmentsController))
+	recruitmentRouter.GET("/:recruitment_id", g.buildFindByIDRecruitmentController(recruitmentsController))
 }
 
 func (g *ginEngine) buildCreateRecruitmentController(recruitmentsController controller.RecruitmentsController) gin.HandlerFunc {
@@ -65,5 +66,16 @@ func (g *ginEngine) buildCreateRecruitmentController(recruitmentsController cont
 func (g *ginEngine) buildFindAllRecruitmentController(recruitmentsController controller.RecruitmentsController) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		recruitmentsController.FindAll(c.Writer, c.Request)
+	}
+}
+
+func (g *ginEngine) buildFindByIDRecruitmentController(recruitmentController controller.RecruitmentsController) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		q := c.Request.URL.Query()
+		q.Add("recruitment_id", c.Param("recruitment_id"))
+		c.Request.URL.RawQuery = q.Encode()
+
+		recruitmentController.FindByID(c.Writer, c.Request)
 	}
 }

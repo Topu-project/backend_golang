@@ -9,7 +9,8 @@ import (
 
 type RecruitmentUsecase interface {
 	Create(input input.CreateRecruitmentInput) error
-	FindAll() ([]output.FindAllRecruitmentOutput, error)
+	FindAll() ([]output.RecruitmentOutput, error)
+	FindByID(recruitmentID int) (output.RecruitmentOutput, error)
 }
 
 type recruitmentUsecase struct {
@@ -21,7 +22,15 @@ func NewRecruitmentUsecase(rr domain.RecruitmentRepository, p RecruitmentPresent
 	return &recruitmentUsecase{rr: rr, p: p}
 }
 
-func (r *recruitmentUsecase) FindAll() ([]output.FindAllRecruitmentOutput, error) {
+func (r *recruitmentUsecase) FindByID(recruitmentID int) (output.RecruitmentOutput, error) {
+	recruitment, err := r.rr.FindByID(recruitmentID)
+	if err != nil {
+		return r.p.Output(domain.Recruitment{}), err
+	}
+	return r.p.Output(recruitment), nil
+}
+
+func (r *recruitmentUsecase) FindAll() ([]output.RecruitmentOutput, error) {
 	recruitments, err := r.rr.FindAll()
 	if err != nil {
 		return r.p.FindAllOutput([]domain.Recruitment{}), err

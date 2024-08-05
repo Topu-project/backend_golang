@@ -8,7 +8,7 @@ import (
 type CreateRecruitmentOutput struct {
 }
 
-type FindAllRecruitmentOutput struct {
+type RecruitmentOutput struct {
 	ID                    *int                         `json:"id"`
 	RecruitmentCategories domain.RecruitmentCategories `json:"recruitment_categories"`
 	ProgressMethods       domain.ProgressMethods       `json:"progress_methods"`

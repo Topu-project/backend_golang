@@ -13,6 +13,11 @@ type mysqlHandler struct {
 	db *sql.DB
 }
 
+func (m mysqlHandler) QueryRow(query string, args ...any) repository.Row {
+	row := m.db.QueryRow(query, args...)
+	return newMySQLRow(row)
+}
+
 func (m mysqlHandler) Query(query string, args ...any) (repository.Rows, error) {
 	rows, err := m.db.Query(query, args...)
 	if err != nil {
@@ -22,6 +27,17 @@ func (m mysqlHandler) Query(query string, args ...any) (repository.Rows, error) 
 	row := newMySQLRows(rows)
 
 	return &row, nil
+}
+
+type mySQLRow struct {
+	row *sql.Row
+}
+
+func (m *mySQLRow) Scan(dest ...any) error {
+	if err := m.row.Scan(dest...); err != nil {
+		return err
+	}
+	return nil
 }
 
 type mySQLRows struct {
@@ -67,9 +83,13 @@ func (m mysqlHandler) QueryContext(ctx context.Context, s string, i ...interface
 	panic("implement me")
 }
 
-func (m mysqlHandler) QueryRowContext(ctx context.Context, s string, i ...interface{}) repository.Row {
-	//TODO implement me
-	panic("implement me")
+func (m mysqlHandler) QueryRowContext(ctx context.Context, query string, args ...interface{}) repository.Row {
+	row := m.db.QueryRowContext(ctx, query, args)
+	return newMySQLRow(row)
+}
+
+func newMySQLRow(row *sql.Row) repository.Row {
+	return &mySQLRow{row: row}
 }
 
 func (m mysqlHandler) BeginTx(ctx context.Context) (repository.Tx, error) {

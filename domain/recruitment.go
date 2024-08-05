@@ -52,6 +52,7 @@ type (
 	RecruitmentRepository interface {
 		Create(recruitment Recruitment) error
 		FindAll() ([]Recruitment, error)
+		FindByID(recruitmentID int) (Recruitment, error)
 	}
 )
 

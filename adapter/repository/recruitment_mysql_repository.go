@@ -12,12 +12,57 @@ type RecruitmentSQL struct {
 }
 
 func NewRecruitmentSQL(db SQL) domain.RecruitmentRepository {
-	return &RecruitmentSQL{
-		db: db,
+	return &RecruitmentSQL{db: db}
+}
+
+func (r *RecruitmentSQL) FindByID(recruitmentID int) (domain.Recruitment, error) {
+	var (
+		id                    int
+		recruitmentCategories domain.RecruitmentCategories
+		progressMethods       domain.ProgressMethods
+		techStacks            string
+		positions             string
+		numberOfPeople        int16
+		progressPeriod        int16
+		recruitmentDeadline   time.Time
+		contract              string
+		subject               string
+		content               string
+	)
+
+	query := "SELECT * FROM recruitment WHERE id = ?"
+	err := r.db.QueryRow(query, recruitmentID).Scan(
+		&id,
+		&recruitmentCategories,
+		&progressMethods,
+		&techStacks,
+		&positions,
+		&numberOfPeople,
+		&progressPeriod,
+		&recruitmentDeadline,
+		&contract,
+		&subject,
+		&content)
+	if err != nil {
+		return domain.Recruitment{}, err
 	}
+	return domain.NewRecruitment(
+		&id,
+		recruitmentCategories,
+		progressMethods,
+		techStacks,
+		positions,
+		numberOfPeople,
+		progressPeriod,
+		recruitmentDeadline,
+		contract,
+		subject,
+		content,
+	), nil
 }
 
 func (r *RecruitmentSQL) FindAll() ([]domain.Recruitment, error) {
+
 	query := `SELECT * FROM recruitment`
 	rows, err := r.db.Query(query)
 	if err != nil {

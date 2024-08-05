@@ -7,11 +7,14 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type RecruitmentsController interface {
 	Create(w http.ResponseWriter, req *http.Request)
 	FindAll(w http.ResponseWriter, req *http.Request)
+	FindByID(w http.ResponseWriter, req *http.Request)
+	Delete(w http.ResponseWriter, req *http.Request)
 }
 
 type recruitmentController struct {
@@ -20,6 +23,24 @@ type recruitmentController struct {
 
 func NewRecruitmentsController(uc usecase.RecruitmentUsecase) RecruitmentsController {
 	return &recruitmentController{uc: uc}
+}
+
+func (r *recruitmentController) FindByID(w http.ResponseWriter, req *http.Request) {
+
+	recruitmentID := req.URL.Query().Get("recruitment_id")
+	parsedID, _ := strconv.ParseInt(recruitmentID, 10, 64)
+	output, err := r.uc.FindByID(int(parsedID))
+	if err != nil {
+		response.NewError(http.StatusBadRequest, err).Send(w)
+		return
+	}
+
+	response.NewSuccess(http.StatusOK, output).Send(w)
+}
+
+func (r *recruitmentController) Delete(w http.ResponseWriter, req *http.Request) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (r *recruitmentController) FindAll(w http.ResponseWriter, req *http.Request) {
