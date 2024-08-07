@@ -14,7 +14,6 @@ type RecruitmentsController interface {
 	Create(w http.ResponseWriter, req *http.Request)
 	FindAll(w http.ResponseWriter, req *http.Request)
 	FindByID(w http.ResponseWriter, req *http.Request)
-	Delete(w http.ResponseWriter, req *http.Request)
 }
 
 type recruitmentController struct {
@@ -36,11 +35,6 @@ func (r *recruitmentController) FindByID(w http.ResponseWriter, req *http.Reques
 	}
 
 	response.NewSuccess(http.StatusOK, output).Send(w)
-}
-
-func (r *recruitmentController) Delete(w http.ResponseWriter, req *http.Request) {
-	//TODO implement me
-	panic("implement me")
 }
 
 func (r *recruitmentController) FindAll(w http.ResponseWriter, req *http.Request) {

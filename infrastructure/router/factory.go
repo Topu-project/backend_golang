@@ -19,7 +19,7 @@ type Server interface {
 	Listen()
 }
 
-func NewWebServerFactory(instance int, db repository.SQL, port Port) (Server, error) {
+func NewWebServerFactory(instance int, db repository.ORM, port Port) (Server, error) {
 	switch instance {
 	case InstanceGin:
 		return newGinServer(port, db), nil

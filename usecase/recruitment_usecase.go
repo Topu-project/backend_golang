@@ -42,7 +42,6 @@ func (r *recruitmentUsecase) FindAll() ([]output.RecruitmentOutput, error) {
 func (r *recruitmentUsecase) Create(input input.CreateRecruitmentInput) error {
 
 	recruitment := domain.NewRecruitment(
-		nil,
 		input.RecruitmentCategories,
 		input.ProgressMethods,
 		input.TechStacks,

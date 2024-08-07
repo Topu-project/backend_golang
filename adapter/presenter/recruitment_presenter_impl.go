@@ -14,9 +14,8 @@ func NewRecruitmentPresenter() usecase.RecruitmentPresenter {
 }
 
 func (r *recruitmentPresenter) Output(recruitment domain.Recruitment) output.RecruitmentOutput {
-	readOnly := recruitment.ToReadOnly()
+	readOnly := recruitment.ToRecord()
 	return output.RecruitmentOutput{
-		ID:                    readOnly.ID,
 		RecruitmentCategories: readOnly.RecruitmentCategories,
 		ProgressMethods:       readOnly.ProgressMethods,
 		TechStacks:            readOnly.TechStacks,
@@ -33,9 +32,8 @@ func (r *recruitmentPresenter) Output(recruitment domain.Recruitment) output.Rec
 func (r *recruitmentPresenter) FindAllOutput(recruitments []domain.Recruitment) []output.RecruitmentOutput {
 	outputs := make([]output.RecruitmentOutput, 0)
 	for _, recruitment := range recruitments {
-		readOnly := recruitment.ToReadOnly()
+		readOnly := recruitment.ToRecord()
 		outputs = append(outputs, output.RecruitmentOutput{
-			ID:                    readOnly.ID,
 			RecruitmentCategories: readOnly.RecruitmentCategories,
 			ProgressMethods:       readOnly.ProgressMethods,
 			TechStacks:            readOnly.TechStacks,

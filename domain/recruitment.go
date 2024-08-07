@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"gorm.io/gorm"
 	"time"
 	_ "time"
 )
@@ -22,7 +23,10 @@ const (
 
 type (
 	Recruitment struct {
-		id                    *int
+		ID                    uint
+		CreatedAt             time.Time
+		UpdatedAt             time.Time
+		DeletedAt             time.Time
 		recruitmentCategories RecruitmentCategories
 		progressMethods       ProgressMethods
 		techStacks            string
@@ -35,8 +39,8 @@ type (
 		content               string
 	}
 
-	RecruitmentReadOnly struct {
-		ID                    *int
+	RecruitmentRecord struct {
+		gorm.Model
 		RecruitmentCategories RecruitmentCategories
 		ProgressMethods       ProgressMethods
 		TechStacks            string
@@ -57,7 +61,6 @@ type (
 )
 
 func NewRecruitment(
-	id *int,
 	recruitmentCategories RecruitmentCategories,
 	progressMethods ProgressMethods,
 	techStacks string,
@@ -70,7 +73,6 @@ func NewRecruitment(
 	content string,
 ) Recruitment {
 	return Recruitment{
-		id:                    id,
 		recruitmentCategories: recruitmentCategories,
 		progressMethods:       progressMethods,
 		techStacks:            techStacks,
@@ -84,9 +86,8 @@ func NewRecruitment(
 	}
 }
 
-func (r *Recruitment) ToReadOnly() *RecruitmentReadOnly {
-	return &RecruitmentReadOnly{
-		ID:                    r.id,
+func (r *Recruitment) ToRecord() *RecruitmentRecord {
+	return &RecruitmentRecord{
 		RecruitmentCategories: r.recruitmentCategories,
 		ProgressMethods:       r.progressMethods,
 		TechStacks:            r.techStacks,
@@ -98,4 +99,8 @@ func (r *Recruitment) ToReadOnly() *RecruitmentReadOnly {
 		Subject:               r.subject,
 		Content:               r.content,
 	}
+}
+
+func (i *RecruitmentRecord) TableName() string {
+	return "recruitment"
 }

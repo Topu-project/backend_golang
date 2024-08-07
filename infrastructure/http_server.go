@@ -13,6 +13,7 @@ import (
 type config struct {
 	env           string
 	dbSQL         repository.SQL
+	dbORM         repository.ORM
 	webServerPort router.Port
 	webServer     router.Server
 }
@@ -24,6 +25,22 @@ func NewConfig() *config {
 	env := os.Getenv("ENV")
 	log.Println(env, " IS LOADED")
 	return &config{env: env}
+}
+
+func (c *config) Migrate(values ...any) *config {
+	c.dbORM.AutoMigrate(values...)
+	return c
+}
+
+func (c *config) ORM(instance int) *config {
+	orm, err := database.NewORMFactory(instance)
+	if err != nil {
+		log.Fatalln(err, "Could not make a connection to database")
+	}
+
+	log.Println("Successfully connected to the SQL database")
+	c.dbORM = orm
+	return c
 }
 
 func (c *config) DbSQL(instance int) *config {
@@ -50,7 +67,8 @@ func (c *config) WebServerPort(port string) *config {
 func (c *config) WebServer(instance int) *config {
 	s, err := router.NewWebServerFactory(
 		instance,
-		c.dbSQL,
+		//c.dbSQL,
+		c.dbORM,
 		c.webServerPort,
 	)
 	if err != nil {

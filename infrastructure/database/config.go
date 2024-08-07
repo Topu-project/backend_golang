@@ -25,3 +25,14 @@ func newConfigMySQL() *config {
 		password: os.Getenv("MYSQL_PASSWORD"),
 	}
 }
+
+func newConfigGorm() *config {
+	return &config{
+		host:     os.Getenv("MYSQL_HOST"),
+		database: os.Getenv("MYSQL_DATABASE"),
+		port:     os.Getenv("MYSQL_PORT"),
+		driver:   os.Getenv("MYSQL_DRIVER"),
+		user:     os.Getenv("MYSQL_USER"),
+		password: os.Getenv("MYSQL_PASSWORD"),
+	}
+}

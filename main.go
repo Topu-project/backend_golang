@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend_golang/domain"
 	"backend_golang/infrastructure"
 	"backend_golang/infrastructure/database"
 	"backend_golang/infrastructure/router"
@@ -9,7 +10,8 @@ import (
 
 func main() {
 	app := infrastructure.NewConfig().
-		DbSQL(database.InstanceMySQL)
+		ORM(database.InstanceGorm).
+		Migrate(&domain.RecruitmentRecord{})
 
 	app.WebServerPort(os.Getenv("APP_PORT")).
 		WebServer(router.InstanceGin).

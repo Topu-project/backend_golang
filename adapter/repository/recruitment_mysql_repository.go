@@ -17,7 +17,6 @@ func NewRecruitmentSQL(db SQL) domain.RecruitmentRepository {
 
 func (r *RecruitmentSQL) FindByID(recruitmentID int) (domain.Recruitment, error) {
 	var (
-		id                    int
 		recruitmentCategories domain.RecruitmentCategories
 		progressMethods       domain.ProgressMethods
 		techStacks            string
@@ -32,7 +31,6 @@ func (r *RecruitmentSQL) FindByID(recruitmentID int) (domain.Recruitment, error)
 
 	query := "SELECT * FROM recruitment WHERE id = ?"
 	err := r.db.QueryRow(query, recruitmentID).Scan(
-		&id,
 		&recruitmentCategories,
 		&progressMethods,
 		&techStacks,
@@ -47,7 +45,6 @@ func (r *RecruitmentSQL) FindByID(recruitmentID int) (domain.Recruitment, error)
 		return domain.Recruitment{}, err
 	}
 	return domain.NewRecruitment(
-		&id,
 		recruitmentCategories,
 		progressMethods,
 		techStacks,
@@ -102,7 +99,6 @@ func (r *RecruitmentSQL) FindAll() ([]domain.Recruitment, error) {
 		}
 
 		recruitments = append(recruitments, domain.NewRecruitment(
-			&id,
 			recruitmentCategories,
 			progressMethods,
 			techStacks,
@@ -125,7 +121,7 @@ func (r *RecruitmentSQL) FindAll() ([]domain.Recruitment, error) {
 }
 
 func (r *RecruitmentSQL) Create(recruitment domain.Recruitment) error {
-	rd := recruitment.ToReadOnly()
+	rd := recruitment.ToRecord()
 	var query = `INSERT INTO recruitment(recruitment_categories,
 										 progress_methods,
 										 tech_stacks,
