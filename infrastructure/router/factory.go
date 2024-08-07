@@ -11,6 +11,7 @@ var (
 
 const (
 	InstanceGin = iota
+	InstanceEcho
 )
 
 type Port int64

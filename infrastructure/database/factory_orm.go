@@ -14,7 +14,7 @@ const (
 func NewORMFactory(instance int) (repository.ORM, error) {
 	switch instance {
 	case InstanceGorm:
-		return NewGormHandler(newConfigGorm()), nil
+		return newGormHandler(newConfigGorm()), nil
 	default:
 		return nil, ErrInvalidORMDatabaseInstance
 	}

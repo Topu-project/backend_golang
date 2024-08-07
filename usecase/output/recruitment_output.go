@@ -9,7 +9,9 @@ type CreateRecruitmentOutput struct {
 }
 
 type RecruitmentOutput struct {
-	ID                    *int                         `json:"id"`
+	ID                    uint                         `json:"id"`
+	CreatedAt             time.Time                    `json:"created_at"`
+	UpdatedAt             time.Time                    `json:"updated_at"`
 	RecruitmentCategories domain.RecruitmentCategories `json:"recruitment_categories"`
 	ProgressMethods       domain.ProgressMethods       `json:"progress_methods"`
 	TechStacks            string                       `json:"tech_stacks"`

@@ -1,6 +1,8 @@
 package repository
 
-import "backend_golang/domain"
+import (
+	"backend_golang/domain"
+)
 
 type RecruitmentORM struct {
 	db ORM
@@ -23,6 +25,10 @@ func (r *RecruitmentORM) FindAll() ([]domain.Recruitment, error) {
 }
 
 func (r *RecruitmentORM) FindByID(recruitmentID int) (domain.Recruitment, error) {
-	//TODO implement me
-	panic("implement me")
+	var record domain.RecruitmentRecord
+	if err := r.db.Find(&record, recruitmentID); err != nil {
+		return domain.Recruitment{}, err
+	}
+
+	return record.ToDomain(), nil
 }

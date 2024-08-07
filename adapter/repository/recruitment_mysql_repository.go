@@ -45,6 +45,9 @@ func (r *RecruitmentSQL) FindByID(recruitmentID int) (domain.Recruitment, error)
 		return domain.Recruitment{}, err
 	}
 	return domain.NewRecruitment(
+		1,
+		time.Now(),
+		time.Now(),
 		recruitmentCategories,
 		progressMethods,
 		techStacks,
@@ -99,6 +102,9 @@ func (r *RecruitmentSQL) FindAll() ([]domain.Recruitment, error) {
 		}
 
 		recruitments = append(recruitments, domain.NewRecruitment(
+			1,
+			time.Now(),
+			time.Now(),
 			recruitmentCategories,
 			progressMethods,
 			techStacks,

@@ -23,10 +23,9 @@ const (
 
 type (
 	Recruitment struct {
-		ID                    uint
-		CreatedAt             time.Time
-		UpdatedAt             time.Time
-		DeletedAt             time.Time
+		id                    uint
+		createdAt             time.Time
+		updatedAt             time.Time
 		recruitmentCategories RecruitmentCategories
 		progressMethods       ProgressMethods
 		techStacks            string
@@ -61,6 +60,9 @@ type (
 )
 
 func NewRecruitment(
+	id uint,
+	createdAt time.Time,
+	updatedAt time.Time,
 	recruitmentCategories RecruitmentCategories,
 	progressMethods ProgressMethods,
 	techStacks string,
@@ -73,6 +75,9 @@ func NewRecruitment(
 	content string,
 ) Recruitment {
 	return Recruitment{
+		id:                    id,
+		createdAt:             createdAt,
+		updatedAt:             updatedAt,
 		recruitmentCategories: recruitmentCategories,
 		progressMethods:       progressMethods,
 		techStacks:            techStacks,
@@ -88,6 +93,11 @@ func NewRecruitment(
 
 func (r *Recruitment) ToRecord() *RecruitmentRecord {
 	return &RecruitmentRecord{
+		Model: gorm.Model{
+			ID:        r.id,
+			CreatedAt: r.createdAt,
+			UpdatedAt: r.updatedAt,
+		},
 		RecruitmentCategories: r.recruitmentCategories,
 		ProgressMethods:       r.progressMethods,
 		TechStacks:            r.techStacks,
@@ -101,6 +111,24 @@ func (r *Recruitment) ToRecord() *RecruitmentRecord {
 	}
 }
 
-func (i *RecruitmentRecord) TableName() string {
+func (r *RecruitmentRecord) TableName() string {
 	return "recruitment"
+}
+
+func (r *RecruitmentRecord) ToDomain() Recruitment {
+	return NewRecruitment(
+		r.ID,
+		r.CreatedAt,
+		r.UpdatedAt,
+		r.RecruitmentCategories,
+		r.ProgressMethods,
+		r.TechStacks,
+		r.Positions,
+		r.NumberOfPeople,
+		r.ProgressPeriod,
+		r.RecruitmentDeadline,
+		r.Contract,
+		r.Subject,
+		r.Content,
+	)
 }

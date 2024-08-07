@@ -12,26 +12,19 @@ type gormHandler struct {
 	db *gorm.DB
 }
 
+func (g *gormHandler) Find(dst any, cond ...any) error {
+	result := g.db.Find(dst, cond...)
+	if result.Error != nil {
+		log.Println(result.Error)
+		return result.Error
+	}
+	return nil
+}
+
 func (g *gormHandler) AutoMigrate(dst ...any) {
 	if err := g.db.AutoMigrate(dst...); err != nil {
 		panic("failed to auto migrate database")
 	}
-}
-
-func NewGormHandler(c *config) repository.ORM {
-	dsn := fmt.Sprintf(
-		"%s:%s@/%s?parseTime=true",
-		c.user,
-		c.password,
-		c.database,
-	)
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
-
-	return &gormHandler{db: db}
 }
 
 func (g *gormHandler) Create(value any) error {
@@ -41,4 +34,21 @@ func (g *gormHandler) Create(value any) error {
 		return result.Error
 	}
 	return nil
+}
+
+func newGormHandler(c *config) repository.ORM {
+	dsn := fmt.Sprintf(
+		"%s:%s@/%s?parseTime=true",
+		c.user,
+		c.password,
+		c.database,
+	)
+
+	// あとでdsnとgorm dialectも外部から注入できるようにした方が良さそう
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("[gormHandler Create] panic:] failed to connect database")
+	}
+
+	return &gormHandler{db: db}
 }

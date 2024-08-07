@@ -14,18 +14,21 @@ func NewRecruitmentPresenter() usecase.RecruitmentPresenter {
 }
 
 func (r *recruitmentPresenter) Output(recruitment domain.Recruitment) output.RecruitmentOutput {
-	readOnly := recruitment.ToRecord()
+	record := recruitment.ToRecord()
 	return output.RecruitmentOutput{
-		RecruitmentCategories: readOnly.RecruitmentCategories,
-		ProgressMethods:       readOnly.ProgressMethods,
-		TechStacks:            readOnly.TechStacks,
-		Positions:             readOnly.Positions,
-		NumberOfPeople:        readOnly.NumberOfPeople,
-		ProgressPeriod:        readOnly.ProgressPeriod,
-		RecruitmentDeadline:   readOnly.RecruitmentDeadline,
-		Contract:              readOnly.Contract,
-		Subject:               readOnly.Subject,
-		Content:               readOnly.Content,
+		ID:                    record.ID,
+		CreatedAt:             record.CreatedAt,
+		UpdatedAt:             record.UpdatedAt,
+		RecruitmentCategories: record.RecruitmentCategories,
+		ProgressMethods:       record.ProgressMethods,
+		TechStacks:            record.TechStacks,
+		Positions:             record.Positions,
+		NumberOfPeople:        record.NumberOfPeople,
+		ProgressPeriod:        record.ProgressPeriod,
+		RecruitmentDeadline:   record.RecruitmentDeadline,
+		Contract:              record.Contract,
+		Subject:               record.Subject,
+		Content:               record.Content,
 	}
 }
 
