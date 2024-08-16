@@ -1,10 +1,13 @@
 package domain
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"time"
 	_ "time"
 )
+
+var ErrRecruitmentNotFound = errors.New("応募ポストが存在しません")
 
 type RecruitmentCategories string
 
@@ -38,6 +41,7 @@ type (
 		content               string
 	}
 
+	//RecruitmentRecord gormはフィールドがpublicである必要があるので別途Record構造体をよいしておく
 	RecruitmentRecord struct {
 		gorm.Model
 		RecruitmentCategories RecruitmentCategories
@@ -91,7 +95,7 @@ func NewRecruitment(
 	}
 }
 
-func (r *Recruitment) ToRecord() *RecruitmentRecord {
+func (r *Recruitment) ToReadRecord() *RecruitmentRecord {
 	return &RecruitmentRecord{
 		Model: gorm.Model{
 			ID:        r.id,
@@ -111,8 +115,19 @@ func (r *Recruitment) ToRecord() *RecruitmentRecord {
 	}
 }
 
-func (r *RecruitmentRecord) TableName() string {
-	return "recruitment"
+func (r *Recruitment) ToCommandRecord() *RecruitmentRecord {
+	return &RecruitmentRecord{
+		RecruitmentCategories: r.recruitmentCategories,
+		ProgressMethods:       r.progressMethods,
+		TechStacks:            r.techStacks,
+		Positions:             r.positions,
+		NumberOfPeople:        r.numberOfPeople,
+		ProgressPeriod:        r.progressPeriod,
+		RecruitmentDeadline:   r.recruitmentDeadline,
+		Contract:              r.contract,
+		Subject:               r.subject,
+		Content:               r.content,
+	}
 }
 
 func (r *RecruitmentRecord) ToDomain() Recruitment {
@@ -131,4 +146,9 @@ func (r *RecruitmentRecord) ToDomain() Recruitment {
 		r.Subject,
 		r.Content,
 	)
+}
+
+// TableName gorm で table 名を custom するためには　この関数を override する必要がある
+func (r *RecruitmentRecord) TableName() string {
+	return "recruitment"
 }

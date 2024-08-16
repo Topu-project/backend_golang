@@ -14,7 +14,7 @@ func NewRecruitmentPresenter() usecase.RecruitmentPresenter {
 }
 
 func (r *recruitmentPresenter) Output(recruitment domain.Recruitment) output.RecruitmentOutput {
-	record := recruitment.ToRecord()
+	record := recruitment.ToReadRecord()
 	return output.RecruitmentOutput{
 		ID:                    record.ID,
 		CreatedAt:             record.CreatedAt,
@@ -35,18 +35,21 @@ func (r *recruitmentPresenter) Output(recruitment domain.Recruitment) output.Rec
 func (r *recruitmentPresenter) FindAllOutput(recruitments []domain.Recruitment) []output.RecruitmentOutput {
 	outputs := make([]output.RecruitmentOutput, 0)
 	for _, recruitment := range recruitments {
-		readOnly := recruitment.ToRecord()
+		record := recruitment.ToReadRecord()
 		outputs = append(outputs, output.RecruitmentOutput{
-			RecruitmentCategories: readOnly.RecruitmentCategories,
-			ProgressMethods:       readOnly.ProgressMethods,
-			TechStacks:            readOnly.TechStacks,
-			Positions:             readOnly.Positions,
-			NumberOfPeople:        readOnly.NumberOfPeople,
-			ProgressPeriod:        readOnly.ProgressPeriod,
-			RecruitmentDeadline:   readOnly.RecruitmentDeadline,
-			Contract:              readOnly.Contract,
-			Subject:               readOnly.Subject,
-			Content:               readOnly.Content,
+			ID:                    record.ID,
+			CreatedAt:             record.CreatedAt,
+			UpdatedAt:             record.UpdatedAt,
+			RecruitmentCategories: record.RecruitmentCategories,
+			ProgressMethods:       record.ProgressMethods,
+			TechStacks:            record.TechStacks,
+			Positions:             record.Positions,
+			NumberOfPeople:        record.NumberOfPeople,
+			ProgressPeriod:        record.ProgressPeriod,
+			RecruitmentDeadline:   record.RecruitmentDeadline,
+			Contract:              record.Contract,
+			Subject:               record.Subject,
+			Content:               record.Content,
 		})
 	}
 	return outputs

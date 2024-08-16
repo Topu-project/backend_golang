@@ -127,7 +127,7 @@ func (r *RecruitmentSQL) FindAll() ([]domain.Recruitment, error) {
 }
 
 func (r *RecruitmentSQL) Create(recruitment domain.Recruitment) error {
-	rd := recruitment.ToRecord()
+	rd := recruitment.ToCommandRecord()
 	var query = `INSERT INTO recruitment(recruitment_categories,
 										 progress_methods,
 										 tech_stacks,

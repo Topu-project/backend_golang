@@ -53,7 +53,7 @@ func (g *ginEngine) setAppHandlers(r *gin.Engine) {
 	recruitmentsController := controller.NewRecruitmentsController(recruitmentUsecase)
 
 	recruitmentRouter.POST("", g.buildCreateRecruitmentController(recruitmentsController))
-	//recruitmentRouter.GET("", g.buildFindAllRecruitmentController(recruitmentsController))
+	recruitmentRouter.GET("", g.buildFindAllRecruitmentController(recruitmentsController))
 	recruitmentRouter.GET("/:recruitment_id", g.buildFindByIDRecruitmentController(recruitmentsController))
 }
 
@@ -63,11 +63,12 @@ func (g *ginEngine) buildCreateRecruitmentController(recruitmentsController cont
 	}
 }
 
-//	func (g *ginEngine) buildFindAllRecruitmentController(recruitmentsController controller.RecruitmentsController) gin.HandlerFunc {
-//		return func(c *gin.Context) {
-//			recruitmentsController.FindAll(c.Writer, c.Request)
-//		}
-//	}
+func (g *ginEngine) buildFindAllRecruitmentController(recruitmentsController controller.RecruitmentsController) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		recruitmentsController.FindAll(c.Writer, c.Request)
+	}
+}
+
 func (g *ginEngine) buildFindByIDRecruitmentController(recruitmentController controller.RecruitmentsController) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
