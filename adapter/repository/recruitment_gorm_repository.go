@@ -39,8 +39,9 @@ func (r *RecruitmentORM) FindByID(recruitmentID int) (domain.Recruitment, error)
 		switch {
 		case errors.Is(err, gorm.ErrRecordNotFound):
 			return domain.Recruitment{}, domain.ErrRecruitmentNotFound
+		default:
+			return domain.Recruitment{}, err
 		}
-		return domain.Recruitment{}, err
 	}
 
 	return record.ToDomain(), nil

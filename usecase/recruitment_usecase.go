@@ -4,6 +4,7 @@ import (
 	"backend_golang/domain"
 	"backend_golang/usecase/input"
 	"backend_golang/usecase/output"
+	"errors"
 	"time"
 )
 
@@ -15,6 +16,7 @@ type RecruitmentUsecase interface {
 
 type recruitmentUsecase struct {
 	rr domain.RecruitmentRepository
+	tr domain.TechStackRepository
 	p  RecruitmentPresenter
 }
 
@@ -41,13 +43,23 @@ func (r *recruitmentUsecase) FindAll() ([]output.RecruitmentOutput, error) {
 
 func (r *recruitmentUsecase) Create(input input.CreateRecruitmentInput) error {
 
+	var techStacks []domain.TechStack
+	for _, ts := range input.TechStacks {
+		techStack, err := r.tr.FindByTechStackName(ts)
+		if err != nil && errors.Is(err, domain.ErrTechStackNotFound) {
+			techStacks = append(techStacks, domain.NewTechStack(ts))
+			continue
+		}
+		techStacks = append(techStacks, techStack)
+	}
+
 	recruitment := domain.NewRecruitment(
 		1,
 		time.Now(),
 		time.Now(),
 		input.RecruitmentCategories,
 		input.ProgressMethods,
-		input.TechStacks,
+		techStacks,
 		input.Positions,
 		input.NumberOfPeople,
 		input.ProgressPeriod,

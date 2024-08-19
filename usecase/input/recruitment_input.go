@@ -8,7 +8,7 @@ import (
 type CreateRecruitmentInput struct {
 	RecruitmentCategories domain.RecruitmentCategories `json:"recruitment_categories"`
 	ProgressMethods       domain.ProgressMethods       `json:"progress_methods"`
-	TechStacks            string                       `json:"tech_stacks"`
+	TechStacks            []string                     `json:"tech_stacks"`
 	Positions             string                       `json:"positions"`
 	NumberOfPeople        int16                        `json:"number_of_people"`
 	ProgressPeriod        int16                        `json:"progress_period"`

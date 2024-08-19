@@ -31,7 +31,7 @@ type (
 		updatedAt             time.Time
 		recruitmentCategories RecruitmentCategories
 		progressMethods       ProgressMethods
-		techStacks            string
+		techStacks            []TechStack
 		positions             string
 		numberOfPeople        int16
 		progressPeriod        int16
@@ -46,7 +46,7 @@ type (
 		gorm.Model
 		RecruitmentCategories RecruitmentCategories
 		ProgressMethods       ProgressMethods
-		TechStacks            string
+		TechStacks            []TechStackRecord `gorm:"foreignKey:RecruitmentID"`
 		Positions             string
 		NumberOfPeople        int16
 		ProgressPeriod        int16
@@ -69,7 +69,7 @@ func NewRecruitment(
 	updatedAt time.Time,
 	recruitmentCategories RecruitmentCategories,
 	progressMethods ProgressMethods,
-	techStacks string,
+	techStacks []TechStack,
 	positions string,
 	numberOfPeople int16,
 	progressPeriod int16,
@@ -96,6 +96,11 @@ func NewRecruitment(
 }
 
 func (r *Recruitment) ToReadRecord() *RecruitmentRecord {
+	var techStackRecords []TechStackRecord
+	for _, ts := range r.techStacks {
+		techStackRecords = append(techStackRecords, ts.ToCommandRecord())
+	}
+
 	return &RecruitmentRecord{
 		Model: gorm.Model{
 			ID:        r.id,
@@ -104,7 +109,7 @@ func (r *Recruitment) ToReadRecord() *RecruitmentRecord {
 		},
 		RecruitmentCategories: r.recruitmentCategories,
 		ProgressMethods:       r.progressMethods,
-		TechStacks:            r.techStacks,
+		TechStacks:            techStackRecords,
 		Positions:             r.positions,
 		NumberOfPeople:        r.numberOfPeople,
 		ProgressPeriod:        r.progressPeriod,
@@ -116,10 +121,15 @@ func (r *Recruitment) ToReadRecord() *RecruitmentRecord {
 }
 
 func (r *Recruitment) ToCommandRecord() *RecruitmentRecord {
+	var techStackRecords []TechStackRecord
+	for _, ts := range r.techStacks {
+		techStackRecords = append(techStackRecords, ts.ToCommandRecord())
+	}
+
 	return &RecruitmentRecord{
 		RecruitmentCategories: r.recruitmentCategories,
 		ProgressMethods:       r.progressMethods,
-		TechStacks:            r.techStacks,
+		TechStacks:            techStackRecords,
 		Positions:             r.positions,
 		NumberOfPeople:        r.numberOfPeople,
 		ProgressPeriod:        r.progressPeriod,
@@ -131,13 +141,18 @@ func (r *Recruitment) ToCommandRecord() *RecruitmentRecord {
 }
 
 func (r *RecruitmentRecord) ToDomain() Recruitment {
+	var techStacks []TechStack
+	for _, record := range r.TechStacks {
+		techStacks = append(techStacks, record.ToDomain())
+	}
+
 	return NewRecruitment(
 		r.ID,
 		r.CreatedAt,
 		r.UpdatedAt,
 		r.RecruitmentCategories,
 		r.ProgressMethods,
-		r.TechStacks,
+		techStacks,
 		r.Positions,
 		r.NumberOfPeople,
 		r.ProgressPeriod,

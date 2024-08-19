@@ -14,6 +14,8 @@ type RecruitmentsController interface {
 	Create(w http.ResponseWriter, req *http.Request)
 	FindAll(w http.ResponseWriter, req *http.Request)
 	FindByID(w http.ResponseWriter, req *http.Request)
+	// Delete
+	// Update
 }
 
 type recruitmentController struct {
