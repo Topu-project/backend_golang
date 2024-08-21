@@ -35,7 +35,8 @@ func (r *RecruitmentORM) FindAll() ([]domain.Recruitment, error) {
 
 func (r *RecruitmentORM) FindByID(recruitmentID int) (domain.Recruitment, error) {
 	var record domain.RecruitmentRecord
-	if err := r.db.Find(&record, recruitmentID); err != nil {
+	//if err := r.db.Find(&record, recruitmentID); err != nil {
+	if err := r.db.FindWithPreload(&record, "TechStacks", recruitmentID); err != nil {
 		switch {
 		case errors.Is(err, gorm.ErrRecordNotFound):
 			return domain.Recruitment{}, domain.ErrRecruitmentNotFound

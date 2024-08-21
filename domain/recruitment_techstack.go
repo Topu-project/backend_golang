@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -15,11 +16,11 @@ type (
 	}
 
 	RecruitmentTechStackRecord struct {
-		//gorm.Model
-		CreatedAt     time.Time
-		UpdatedAt     time.Time
-		RecruitmentID uint `gorm:"primaryKey"`
-		TechStackID   uint `gorm:"primaryKey"`
+		gorm.Model
+		//CreatedAt     time.Time
+		//UpdatedAt     time.Time
+		RecruitmentID uint `gorm:"index"`
+		TechStackID   uint `gorm:"index"`
 	}
 
 	RecruitmentTechStackRepository interface {

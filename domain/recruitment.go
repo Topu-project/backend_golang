@@ -47,13 +47,15 @@ type (
 		RecruitmentCategories RecruitmentCategories
 		ProgressMethods       ProgressMethods
 		TechStacks            []TechStackRecord `gorm:"many2many:recruitment_tech_stack"`
-		Positions             string
-		NumberOfPeople        int16
-		ProgressPeriod        int16
-		RecruitmentDeadline   time.Time
-		Contract              string
-		Subject               string
-		Content               string
+		//RecruitmentTechStackRecords []RecruitmentTechStackRecord `gorm:"many2many:recruitment_tech_stack"`
+		//RecruitmentTechStackRecords []RecruitmentTechStackRecord
+		Positions           string
+		NumberOfPeople      int16
+		ProgressPeriod      int16
+		RecruitmentDeadline time.Time
+		Contract            string
+		Subject             string
+		Content             string
 	}
 
 	RecruitmentRepository interface {
@@ -96,10 +98,10 @@ func NewRecruitment(
 }
 
 func (r *Recruitment) ToReadRecord() *RecruitmentRecord {
-	//var techStackRecords []TechStackRecord
-	//for _, ts := range r.techStacks {
-	//	techStackRecords = append(techStackRecords, ts.ToCommandRecord())
-	//}
+	var records []TechStackRecord
+	for _, techStack := range r.techStacks {
+		records = append(records, techStack.ToReadRecord())
+	}
 
 	return &RecruitmentRecord{
 		Model: gorm.Model{
@@ -109,23 +111,18 @@ func (r *Recruitment) ToReadRecord() *RecruitmentRecord {
 		},
 		RecruitmentCategories: r.recruitmentCategories,
 		ProgressMethods:       r.progressMethods,
-		//TechStacks:            techStackRecords,
-		Positions:           r.positions,
-		NumberOfPeople:      r.numberOfPeople,
-		ProgressPeriod:      r.progressPeriod,
-		RecruitmentDeadline: r.recruitmentDeadline,
-		Contract:            r.contract,
-		Subject:             r.subject,
-		Content:             r.content,
+		TechStacks:            records,
+		Positions:             r.positions,
+		NumberOfPeople:        r.numberOfPeople,
+		ProgressPeriod:        r.progressPeriod,
+		RecruitmentDeadline:   r.recruitmentDeadline,
+		Contract:              r.contract,
+		Subject:               r.subject,
+		Content:               r.content,
 	}
 }
 
 func (r *Recruitment) ToCommandRecord() *RecruitmentRecord {
-	//var records []RecruitmentTechStackRecord
-	//for _, rt := range r.recruitmentTechStacks {
-	//	records = append(records, rt.ToCommandRecord())
-	//}
-
 	var records []TechStackRecord
 	for _, ts := range r.techStacks {
 		records = append(records, ts.ToCommandRecord())
@@ -145,31 +142,30 @@ func (r *Recruitment) ToCommandRecord() *RecruitmentRecord {
 	}
 }
 
-func (r *RecruitmentRecord) ToDomain() Recruitment {
-	//var techStacks []TechStack
-	//for _, record := range r.TechStacks {
-	//	techStacks = append(techStacks, record.ToDomain())
-	//}
+func (rr *RecruitmentRecord) ToDomain() Recruitment {
+	var techStacks []TechStack
+	for _, record := range rr.TechStacks {
+		techStacks = append(techStacks, record.ToDomain())
+	}
 
-	return Recruitment{}
-	//return NewRecruitment(
-	//	r.ID,
-	//	r.CreatedAt,
-	//	r.UpdatedAt,
-	//	r.RecruitmentCategories,
-	//	r.ProgressMethods,
-	//	//techStacks,
-	//	r.Positions,
-	//	r.NumberOfPeople,
-	//	r.ProgressPeriod,
-	//	r.RecruitmentDeadline,
-	//	r.Contract,
-	//	r.Subject,
-	//	r.Content,
-	//)
+	return NewRecruitment(
+		rr.ID,
+		rr.CreatedAt,
+		rr.UpdatedAt,
+		rr.RecruitmentCategories,
+		rr.ProgressMethods,
+		techStacks,
+		rr.Positions,
+		rr.NumberOfPeople,
+		rr.ProgressPeriod,
+		rr.RecruitmentDeadline,
+		rr.Contract,
+		rr.Subject,
+		rr.Content,
+	)
 }
 
 // TableName gorm で table 名を custom するためには　この関数を override する必要がある
-func (r *RecruitmentRecord) TableName() string {
+func (rr *RecruitmentRecord) TableName() string {
 	return "recruitment"
 }

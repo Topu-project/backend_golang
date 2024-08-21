@@ -10,17 +10,18 @@ var ErrTechStackNotFound = errors.New("技術スタックが存在しません")
 
 type (
 	TechStack struct {
-		id            uint
-		createdAt     time.Time
-		updatedAt     time.Time
-		techStackName string
-		//RecruitmentTechStacks []RecruitmentTechStack
+		id                    uint
+		createdAt             time.Time
+		updatedAt             time.Time
+		techStackName         string
+		RecruitmentTechStacks []RecruitmentTechStack
 	}
 
 	TechStackRecord struct {
 		gorm.Model
 		TechStackName string `gorm:"unique"`
 		//RecruitmentTechStacks []RecruitmentTechStackRecord `gorm:"foreignKey:TechStackID"`
+		Recruitments []RecruitmentRecord `gorm:"many2many:recruitment_tech_stack"`
 	}
 
 	TechStackRepository interface {
@@ -33,6 +34,17 @@ func NewTechStack(techStackName string) TechStack {
 }
 
 func (t *TechStack) ToCommandRecord() TechStackRecord {
+	return TechStackRecord{
+		Model: gorm.Model{
+			ID:        t.id,
+			CreatedAt: t.createdAt,
+			UpdatedAt: t.updatedAt,
+		},
+		TechStackName: t.techStackName,
+	}
+}
+
+func (t *TechStack) ToReadRecord() TechStackRecord {
 	return TechStackRecord{
 		Model: gorm.Model{
 			ID:        t.id,
