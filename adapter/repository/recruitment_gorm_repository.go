@@ -21,7 +21,8 @@ func (r *RecruitmentORM) Create(recruitment domain.Recruitment) error {
 
 func (r *RecruitmentORM) FindAll() ([]domain.Recruitment, error) {
 	var recruitmentRecords []domain.RecruitmentRecord
-	if err := r.db.Find(&recruitmentRecords); err != nil {
+	//if err := r.db.Find(&recruitmentRecords); err != nil {
+	if err := r.db.FindWithPreload(&recruitmentRecords, "TechStacks"); err != nil {
 		return nil, err
 	}
 

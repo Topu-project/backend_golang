@@ -13,7 +13,8 @@ type gormHandler struct {
 }
 
 func (g *gormHandler) FindWithPreload(dst any, preload string, cond ...any) error {
-	result := g.db.Preload(preload).Where("id = ?", cond...).First(dst)
+	//result := g.db.Preload(preload).Where("id = ?", cond...).First(dst)
+	result := g.db.Preload(preload).Find(dst, cond...)
 	if result.Error != nil {
 		log.Println(result.Error)
 		return result.Error
@@ -27,17 +28,6 @@ func (g *gormHandler) FindWithPreload(dst any, preload string, cond ...any) erro
 
 func (g *gormHandler) Find(dst any, cond ...any) error {
 	result := g.db.Find(dst, cond...)
-	// user.UserRoles에 사용자와 연결된 UserRole들이 포함됩니다.
-	// 각 UserRole에는 UserRole.Role에 해당하는 Role 정보도 포함됩니다.
-	//var techStacks []domain.TechStackRecord
-	//
-	//result := g.db.
-	//	Preload("TechStacks").
-	//	Model(dst).
-	//	Joins("JOIN recruitment_tech_stack ON recruitment.id = recruitment_tech_stack.recruitment_record_id").
-	//	Joins("JOIN tech_stack ON recruitment_tech_stack.tech_stack_record_id = tech_stack.id").
-	//	Where("recruitment.id = ?", cond...).
-	//	Find(&techStacks)
 
 	if result.Error != nil {
 		log.Println(result.Error)

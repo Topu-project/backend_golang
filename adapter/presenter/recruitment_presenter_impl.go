@@ -42,9 +42,9 @@ func (r *recruitmentPresenter) FindAllOutput(recruitments []domain.Recruitment) 
 	for _, recruitment := range recruitments {
 		record := recruitment.ToReadRecord()
 		var techStacks []string
-		//for _, techStack := range record.TechStacks {
-		//	techStacks = append(techStacks, techStack.TechStackName)
-		//}
+		for _, techStack := range record.TechStacks {
+			techStacks = append(techStacks, techStack.TechStackName)
+		}
 		outputs = append(outputs, output.RecruitmentOutput{
 			ID:                    record.ID,
 			CreatedAt:             record.CreatedAt,
