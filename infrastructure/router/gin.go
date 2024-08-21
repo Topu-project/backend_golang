@@ -49,7 +49,8 @@ func (g *ginEngine) setAppHandlers(r *gin.Engine) {
 
 	recruitmentRouter := r.Group("/recruitments")
 	recruitmentDB := repository.NewRecruitmentORM(g.db)
-	recruitmentUsecase := usecase.NewRecruitmentUsecase(recruitmentDB, presenter.NewRecruitmentPresenter())
+	techStackDB := repository.NewTechStackORM(g.db)
+	recruitmentUsecase := usecase.NewRecruitmentUsecase(recruitmentDB, techStackDB, presenter.NewRecruitmentPresenter())
 	recruitmentsController := controller.NewRecruitmentsController(recruitmentUsecase)
 
 	recruitmentRouter.POST("", g.buildCreateRecruitmentController(recruitmentsController))

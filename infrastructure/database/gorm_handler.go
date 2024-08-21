@@ -2,6 +2,7 @@ package database
 
 import (
 	"backend_golang/adapter/repository"
+	"backend_golang/domain"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -26,6 +27,7 @@ func (g *gormHandler) Find(dst any, cond ...any) error {
 }
 
 func (g *gormHandler) AutoMigrate(dst ...any) {
+	g.db.SetupJoinTable(&domain.RecruitmentRecord{}, "TechStacks", &domain.RecruitmentTechStackRecord{})
 	if err := g.db.AutoMigrate(dst...); err != nil {
 		panic("[gormHandler.AutoMigrate] : failed to auto migrate database")
 	}

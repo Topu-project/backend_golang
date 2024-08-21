@@ -20,8 +20,8 @@ type recruitmentUsecase struct {
 	p  RecruitmentPresenter
 }
 
-func NewRecruitmentUsecase(rr domain.RecruitmentRepository, p RecruitmentPresenter) RecruitmentUsecase {
-	return &recruitmentUsecase{rr: rr, p: p}
+func NewRecruitmentUsecase(rr domain.RecruitmentRepository, tr domain.TechStackRepository, p RecruitmentPresenter) RecruitmentUsecase {
+	return &recruitmentUsecase{rr: rr, tr: tr, p: p}
 }
 
 func (r *recruitmentUsecase) FindByID(recruitmentID int) (output.RecruitmentOutput, error) {
@@ -42,7 +42,6 @@ func (r *recruitmentUsecase) FindAll() ([]output.RecruitmentOutput, error) {
 }
 
 func (r *recruitmentUsecase) Create(input input.CreateRecruitmentInput) error {
-
 	var techStacks []domain.TechStack
 	for _, ts := range input.TechStacks {
 		techStack, err := r.tr.FindByTechStackName(ts)
@@ -52,6 +51,26 @@ func (r *recruitmentUsecase) Create(input input.CreateRecruitmentInput) error {
 		}
 		techStacks = append(techStacks, techStack)
 	}
+	//var recruitmentTechStacks []domain.RecruitmentTechStack
+	//for _, ts := range input.TechStacks {
+	//	techStack, err := r.tr.FindByTechStackName(ts)
+	//	if err != nil && errors.Is(err, domain.ErrTechStackNotFound) {
+	//		recruitmentTechStack := domain.NewRecruitmentTechStack(
+	//			0,
+	//			time.Now(),
+	//			time.Now(),
+	//			domain.NewTechStack(ts),
+	//		)
+	//		recruitmentTechStacks = append(recruitmentTechStacks, recruitmentTechStack)
+	//		continue
+	//	}
+	//	recruitmentTechStacks = append(recruitmentTechStacks, domain.NewRecruitmentTechStack(
+	//		0,
+	//		time.Now(),
+	//		time.Now(),
+	//		techStack,
+	//	))
+	//}
 
 	recruitment := domain.NewRecruitment(
 		1,

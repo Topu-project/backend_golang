@@ -46,7 +46,7 @@ type (
 		gorm.Model
 		RecruitmentCategories RecruitmentCategories
 		ProgressMethods       ProgressMethods
-		TechStacks            []TechStackRecord `gorm:"foreignKey:RecruitmentID"`
+		TechStacks            []TechStackRecord `gorm:"many2many:recruitment_tech_stack"`
 		Positions             string
 		NumberOfPeople        int16
 		ProgressPeriod        int16
@@ -96,10 +96,10 @@ func NewRecruitment(
 }
 
 func (r *Recruitment) ToReadRecord() *RecruitmentRecord {
-	var techStackRecords []TechStackRecord
-	for _, ts := range r.techStacks {
-		techStackRecords = append(techStackRecords, ts.ToCommandRecord())
-	}
+	//var techStackRecords []TechStackRecord
+	//for _, ts := range r.techStacks {
+	//	techStackRecords = append(techStackRecords, ts.ToCommandRecord())
+	//}
 
 	return &RecruitmentRecord{
 		Model: gorm.Model{
@@ -109,27 +109,32 @@ func (r *Recruitment) ToReadRecord() *RecruitmentRecord {
 		},
 		RecruitmentCategories: r.recruitmentCategories,
 		ProgressMethods:       r.progressMethods,
-		TechStacks:            techStackRecords,
-		Positions:             r.positions,
-		NumberOfPeople:        r.numberOfPeople,
-		ProgressPeriod:        r.progressPeriod,
-		RecruitmentDeadline:   r.recruitmentDeadline,
-		Contract:              r.contract,
-		Subject:               r.subject,
-		Content:               r.content,
+		//TechStacks:            techStackRecords,
+		Positions:           r.positions,
+		NumberOfPeople:      r.numberOfPeople,
+		ProgressPeriod:      r.progressPeriod,
+		RecruitmentDeadline: r.recruitmentDeadline,
+		Contract:            r.contract,
+		Subject:             r.subject,
+		Content:             r.content,
 	}
 }
 
 func (r *Recruitment) ToCommandRecord() *RecruitmentRecord {
-	var techStackRecords []TechStackRecord
+	//var records []RecruitmentTechStackRecord
+	//for _, rt := range r.recruitmentTechStacks {
+	//	records = append(records, rt.ToCommandRecord())
+	//}
+
+	var records []TechStackRecord
 	for _, ts := range r.techStacks {
-		techStackRecords = append(techStackRecords, ts.ToCommandRecord())
+		records = append(records, ts.ToCommandRecord())
 	}
 
 	return &RecruitmentRecord{
 		RecruitmentCategories: r.recruitmentCategories,
 		ProgressMethods:       r.progressMethods,
-		TechStacks:            techStackRecords,
+		TechStacks:            records,
 		Positions:             r.positions,
 		NumberOfPeople:        r.numberOfPeople,
 		ProgressPeriod:        r.progressPeriod,
@@ -141,26 +146,27 @@ func (r *Recruitment) ToCommandRecord() *RecruitmentRecord {
 }
 
 func (r *RecruitmentRecord) ToDomain() Recruitment {
-	var techStacks []TechStack
-	for _, record := range r.TechStacks {
-		techStacks = append(techStacks, record.ToDomain())
-	}
+	//var techStacks []TechStack
+	//for _, record := range r.TechStacks {
+	//	techStacks = append(techStacks, record.ToDomain())
+	//}
 
-	return NewRecruitment(
-		r.ID,
-		r.CreatedAt,
-		r.UpdatedAt,
-		r.RecruitmentCategories,
-		r.ProgressMethods,
-		techStacks,
-		r.Positions,
-		r.NumberOfPeople,
-		r.ProgressPeriod,
-		r.RecruitmentDeadline,
-		r.Contract,
-		r.Subject,
-		r.Content,
-	)
+	return Recruitment{}
+	//return NewRecruitment(
+	//	r.ID,
+	//	r.CreatedAt,
+	//	r.UpdatedAt,
+	//	r.RecruitmentCategories,
+	//	r.ProgressMethods,
+	//	//techStacks,
+	//	r.Positions,
+	//	r.NumberOfPeople,
+	//	r.ProgressPeriod,
+	//	r.RecruitmentDeadline,
+	//	r.Contract,
+	//	r.Subject,
+	//	r.Content,
+	//)
 }
 
 // TableName gorm で table 名を custom するためには　この関数を override する必要がある

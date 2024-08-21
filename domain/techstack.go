@@ -14,13 +14,13 @@ type (
 		createdAt     time.Time
 		updatedAt     time.Time
 		techStackName string
-		recruitmentID uint
+		//RecruitmentTechStacks []RecruitmentTechStack
 	}
 
 	TechStackRecord struct {
 		gorm.Model
 		TechStackName string `gorm:"unique"`
-		RecruitmentID uint   `gorm:"not null"`
+		//RecruitmentTechStacks []RecruitmentTechStackRecord `gorm:"foreignKey:TechStackID"`
 	}
 
 	TechStackRepository interface {
@@ -34,8 +34,12 @@ func NewTechStack(techStackName string) TechStack {
 
 func (t *TechStack) ToCommandRecord() TechStackRecord {
 	return TechStackRecord{
+		Model: gorm.Model{
+			ID:        t.id,
+			CreatedAt: t.createdAt,
+			UpdatedAt: t.updatedAt,
+		},
 		TechStackName: t.techStackName,
-		RecruitmentID: t.recruitmentID,
 	}
 }
 
@@ -49,6 +53,6 @@ func (tr *TechStackRecord) ToDomain() TechStack {
 		createdAt:     tr.CreatedAt,
 		updatedAt:     tr.UpdatedAt,
 		techStackName: tr.TechStackName,
-		recruitmentID: tr.RecruitmentID,
+		//recruitmentID: tr.RecruitmentID,
 	}
 }

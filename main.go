@@ -11,7 +11,7 @@ import (
 func main() {
 	app := infrastructure.NewConfig().
 		ORM(database.InstanceGorm).
-		Migrate(&domain.RecruitmentRecord{}, &domain.TechStackRecord{})
+		Migrate(&domain.RecruitmentTechStackRecord{}, &domain.RecruitmentRecord{}, &domain.TechStackRecord{})
 
 	app.WebServerPort(os.Getenv("APP_PORT")).
 		WebServer(router.InstanceGin).
