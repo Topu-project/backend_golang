@@ -6,6 +6,7 @@ import (
 	"backend_golang/adapter/repository"
 	"backend_golang/usecase"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"log"
 	"net/http"
 	"time"
@@ -47,6 +48,7 @@ func (g *ginEngine) Listen() {
 
 func (g *ginEngine) setAppHandlers(r *gin.Engine) {
 
+	r.Use(cors.Default())
 	recruitmentRouter := r.Group("/recruitments")
 	recruitmentDB := repository.NewRecruitmentORM(g.db)
 	techStackDB := repository.NewTechStackORM(g.db)
